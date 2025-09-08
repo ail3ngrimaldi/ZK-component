@@ -1,29 +1,33 @@
-/**
- * Shared types and interfaces for the ZK Proof Web Component
- */
+// src/core/types.ts
 
-export interface ZKProofConfig {
-  validationType: string;
-  threshold: number;
-  inputLabel: string;
-  successMessage: string;
-  errorMessage: string;
-  buttonText: string;
+import {
+  type PrivateStateProvider,
+  type ZkConfigProvider,
+  type ProofProvider,
+  type PublicDataProvider,
+  type WalletProvider,
+  type MidnightProvider,
+} from '@midnight-ntwrk/midnight-js-contracts';
+
+// 🔑 Clave para almacenar el estado privado del usuario
+export const bboardPrivateStateKey = 'bboard-private-state-v1';
+
+// 🧩 Interfaces
+
+export interface BBoardProviders {
+  privateStateProvider: PrivateStateProvider;
+  zkConfigProvider: ZkConfigProvider;
+  proofProvider: ProofProvider;
+  publicDataProvider: PublicDataProvider;
+  walletProvider: WalletProvider;
+  midnightProvider: MidnightProvider;
 }
 
-export interface ZKProofResult {
-  success: boolean;
-  proof?: string;
-  publicResult?: number;
-  timestamp: string;
-  validationType: string;
-  threshold: number;
+export interface BBoardPrivateState {
+  secretKey: Uint8Array;
 }
 
-export interface WalletState {
-  connected: boolean;
-  address?: string;
-  network?: string;
+export interface DeployedBBoardContract {
+  deployTxData: any;
+  callTx: any;
 }
-
-// TODO: Add more types as needed

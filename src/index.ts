@@ -3,28 +3,33 @@
  * Entry point for the modular ZK proof validation component
  */
 
-// Export the main Web Component
-export { ZKProofWebComponent } from './components/ZKProofWebComponent';
+// 🧩 Auto-register the component when imported
+import './components/ZKProofWebComponent.js';
 
-// Export core services for advanced usage
-export { BBoardAPI } from './core/BBoardAPI';
-export { WalletConnector } from './core/WalletConnector';
-export { ZKProofService } from './core/ZKProofService';
-export { Logger } from './core/utils';
+// 📦 Export the main Web Component (named + default)
+export { ZKProofWebComponent } from './components/ZKProofWebComponent.js';
+export { ZKProofWebComponent as default } from './components/ZKProofWebComponent.js';
 
-// Export types
-export type { 
-  ZKProofConfig, 
-  ZKProofResult, 
-  WalletState 
-} from './core/types';
+// ⚙️ Export core services for advanced usage (optional)
+export { BBoardAPI } from './core/BBoardAPI.js';
 
-// Auto-register the component when imported
-import './components/ZKProofWebComponent';
+// 🧾 Export types for TypeScript users
+export type { BBoardDerivedState } from './core/BBoardAPI.js';
+export type { BBoardProviders } from './core/types.js';
 
-// Library metadata
+// 🏷️ Library metadata (útil para debugging y logs)
 export const version = '1.0.0';
 export const name = 'zk-proof-web-component';
+export const description = 'Reusable Web Component for generating ZK proofs on Midnight Network';
 
-// Default export for convenience
-export { ZKProofWebComponent as default } from './components/ZKProofWebComponent';
+// ℹ️ Helper: Check if component is registered
+export function isComponentRegistered() {
+  return customElements.get('zk-proof') !== undefined;
+}
+
+// 🚀 Helper: Force register if needed (for edge cases)
+export function registerComponent() {
+  if (!isComponentRegistered()) {
+    customElements.define('zk-proof', ZKProofWebComponent);
+  }
+}

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ ZK Proof Web Component - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .demo-card p {
+            margin-bottom: 24px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .event-log {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .log-title {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .log-content {
+            background: #111;
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .log-entry {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .log-entry.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            color: #10b981;
+        }
+        
+        .log-entry.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: auto;
+            display: block;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🛡️ ZK Proof Web Component</h1>
+            <p>Generic Zero-Knowledge Proof validation component for Midnight Network. Test different validation scenarios below.</p>
+        </header>
+
+        <div class="demo-grid">
+            <!-- KYC Age Country -->
+            <div class="demo-card">
+                <h3>🎂 KYC Age + Country</h3>
+                <p>Prueba de verificación de edad y país usando tu componente real.</p>
+                <zk-proof 
+                    contract-address="0x1234...abcd"
+                    proof-type="kyc-age-country"
+                    network="testnet">
+                </zk-proof>
+            </div>
+
+            <!-- Custom Proof -->
+            <div class="demo-card">
+                <h3>🔐 Custom Proof</h3>
+                <p>Prueba personalizada genérica - puedes probar cualquier configuración JSON.</p>
+                <zk-proof 
+                    contract-address="0x5678...efgh"
+                    proof-type="custom-proof"
+                    network="testnet">
+                </zk-proof>
+            </div>
+        </div>
+
+        <!-- Event Log -->
+        <div class="event-log">
+            <div class="log-title">
+                📡 Live Event Log
+                <button class="clear-btn" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="log-content" id="logContent">
+                <div class="log-entry success">System initialized - Ready for ZK validations!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import our built Web Component -->
+    <script type="module" src="./src/components/ZKProofWebComponent.js"></script>
+    
+    <script>
+        const logContent = document.getElementById('logContent');
+        
+        function addLogEntry(message, type = 'success') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            logContent.appendChild(entry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+        
+        function clearLog() {
+            logContent.innerHTML = '<div class="log-entry success">Log cleared - Ready for new validations!</div>';
+        }
+        
+        // Listen to ZK proof events from your actual component
+        document.addEventListener('proof-generated', (event) => {
+            const { txId, proofType } = event.detail;
+            addLogEntry(`✅ <strong>${proofType.toUpperCase()}</strong> proof generated! Tx: ${txId.slice(0, 10)}...`, 'success');
+        });
+        
+        document.addEventListener('error', (event) => {
+            addLogEntry(`❌ Error: ${event.detail}`, 'error');
+        });
+        
+        // Add welcome message after components load
+        setTimeout(() => {
+            addLogEntry('🚀 ZK Web Component loaded successfully! Try the generators above.', 'success');
+        }, 1000);
+    </script>
+</body>
+</html>

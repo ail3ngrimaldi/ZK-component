@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ ZK Proof Web Component - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .demo-card p {
+            margin-bottom: 24px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .event-log {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .log-title {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .log-content {
+            background: #111;
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .log-entry {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .log-entry.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            color: #10b981;
+        }
+        
+        .log-entry.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: auto;
+            display: block;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🛡️ ZK Proof Web Component</h1>
+            <p>Generic Zero-Knowledge Proof validation component for Midnight Network. Test different validation scenarios below.</p>
+        </header>
+
+        <div class="demo-grid">
+            <!-- Age Verification -->
+            <div class="demo-card">
+                <h3>🎂 Age Verification</h3>
+                <p>Verify user is 18+ without revealing exact age. Try values like 17 (fail) and 25 (pass).</p>
+                <zk-proof-validator 
+                    validation-type="age"
+                    threshold="18"
+                    input-label="Enter your age"
+                    success-message="✅ Age verified (18+)"
+                    error-message="❌ Must be 18 or older"
+                    button-text="Verify Age">
+                </zk-proof-validator>
+            </div>
+
+            <!-- Income Verification -->
+            <div class="demo-card">
+                <h3>💰 Income Verification</h3>
+                <p>Prove income meets requirements without revealing salary. Try values like 30000 (fail) and 75000 (pass).</p>
+                <zk-proof-validator 
+                    validation-type="income"
+                    threshold="50000"
+                    input-label="Annual income (USD)"
+                    success-message="✅ Income qualified ($50k+)"
+                    error-message="❌ Minimum $50k required"
+                    button-text="Verify Income">
+                </zk-proof-validator>
+            </div>
+
+            <!-- Credit Score -->
+            <div class="demo-card">
+                <h3>📊 Credit Score</h3>
+                <p>Validate creditworthiness without exposing exact score. Try 650 (fail) and 750 (pass).</p>
+                <zk-proof-validator 
+                    validation-type="credit"
+                    threshold="700"
+                    input-label="Credit score"
+                    success-message="✅ Excellent credit (700+)"
+                    error-message="❌ Minimum 700 score required"
+                    button-text="Check Credit">
+                </zk-proof-validator>
+            </div>
+
+            <!-- Experience -->
+            <div class="demo-card">
+                <h3>🎯 Experience Level</h3>
+                <p>Verify professional experience without revealing work history. Try 2 (fail) and 8 (pass).</p>
+                <zk-proof-validator 
+                    validation-type="experience"
+                    threshold="5"
+                    input-label="Years of experience"
+                    success-message="✅ Qualified (5+ years)"
+                    error-message="❌ Minimum 5 years required"
+                    button-text="Verify Experience">
+                </zk-proof-validator>
+            </div>
+        </div>
+
+        <!-- Event Log -->
+        <div class="event-log">
+            <div class="log-title">
+                📡 Live Event Log
+                <button class="clear-btn" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="log-content" id="logContent">
+                <div class="log-entry success">System initialized - Ready for ZK validations!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import our built Web Component -->
+    <script type="module" src="../dist/index.es.js"></script>
+    
+    <script>
+        const logContent = document.getElementById('logContent');
+        
+        function addLogEntry(message, type = 'success') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            logContent.appendChild(entry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+        
+        function clearLog() {
+            logContent.innerHTML = '<div class="log-entry success">Log cleared - Ready for new validations!</div>';
+        }
+        
+        // Listen to all ZK validation events
+        document.addEventListener('zk-validation-success', (event) => {
+            const { validationType, threshold } = event.detail;
+            addLogEntry(`✅ <strong>${validationType.toUpperCase()}</strong> validation SUCCESS (threshold: ${threshold})`, 'success');
+        });
+        
+        document.addEventListener('zk-validation-error', (event) => {
+            const { validationType, threshold } = event.detail;
+            addLogEntry(`❌ <strong>${validationType.toUpperCase()}</strong> validation FAILED (required: ${threshold})`, 'error');
+        });
+        
+        // Add welcome message after components load
+        setTimeout(() => {
+            addLogEntry('🚀 ZK Web Components loaded successfully! Try the validators above.', 'success');
+        }, 1000);
+    </script>
+</body>
+</html>

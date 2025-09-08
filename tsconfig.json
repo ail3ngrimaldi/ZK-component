@@ -1,13 +1,15 @@
 {
   "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
   "compilerOptions": {
-    // "rootDir": "src",
+    "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
-    "lib": ["ESNext"],
+    "declarationMap": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
@@ -16,10 +18,15 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
     "baseUrl": ".",
     "paths": {
-      "@contract/*": ["../../contract/src/*"]
-    }
+      "@/*": ["src/*"]
+    },
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
   }
 }

@@ -1,132 +1,210 @@
-# Counter DApp
+# 🛡️ ZK Proof Web Component
 
-[![Generic badge](https://img.shields.io/badge/Compact%20Compiler-0.25.0-1abc9c.svg)](https://shields.io/)  
-[![Generic badge](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/Midnight%20Network-Enabled-1abc9c.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/Zero--Knowledge-Proofs-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/Web%20Components-v1-green.svg)](https://shields.io/)
 
-## Prerequisites
+A generic, reusable Web Component for zero-knowledge proof validations on Midnight Network. Enables privacy-preserving verification for any threshold-based requirement in any web application.
 
-1. You must have NodeJS version 22.15 or greater installed.
-2. Download the latest version of the Compact developer tools from [the release page](https://docs.midnight.network/relnotes/compact-tools) and follow the instructions to install it.
+## ✨ Features
 
-   For example, if you unzipped the Compact compiler in `$HOME/bin/compactc`:
+- 🔒 **Privacy-First**: Your data stays private using zero-knowledge proofs
+- ⚡ **Framework Agnostic**: Works with React, Vue, Angular, or plain HTML
+- 🎨 **Customizable**: Fully configurable UI, messages, and validation logic
+- 📱 **Responsive**: Modern glassmorphism design that adapts to any screen
+- 🛡️ **Midnight Network**: Built specifically for Midnight's ZK capabilities
+- 🔧 **Easy Integration**: Drop-in component with simple HTML attributes
 
-   ```sh
-   export PATH=$PATH:$HOME/bin/compactc
-   ```
+## 🚀 Quick Start
 
-3. Run `npm install` in the root folder to install all the necessary packages.
-4. Compile and build the code in the `contract` folder before running the code in the `counter-cli` folder.  
-   In the `contract` folder, run this command:
+### Installation
 
-   ```sh
-   npm run compact && npm run build
-   ```
-
-   Follow the instructions in the documentation [to install and launch the proof server](https://docs.midnight.network/develop/tutorial/using/proof-server).
-
-5. Switch to the `counter-cli` folder and run this command:
-
-   ```sh
-   npm run start-testnet-remote
-   ```
-
-   If you do not have a wallet yet, you will be given the option to create a new one. After getting your address, you can use the [official faucet](https://faucet.testnet-02.midnight.network/) to request coins to deploy a contract on testnet and interact with it.
-
-## The counter contract
-
-The [contract](contract) subdirectory contains:
-
-- the [smart contract](contract/src/counter.compact)
-- some [unit tests](contract/src/test/counter.test.ts) to test the smart contract
-
-### The source code
-
-The contract contains a declaration of state stored publicly on the blockchain:
-
-```compact
-export ledger round: Counter;
+```bash
+npm install zk-proof-web-component
 ```
 
-and a single transition function to change the state:
+### Basic Usage
 
-```compact
-export circuit increment(): [] {
-  round.increment(1);
+```html
+<!-- Simple age verification -->
+<zk-proof-validator 
+  validation-type="age"
+  threshold="18"
+  input-label="Enter your age"
+  success-message="✅ Age verified!"
+  error-message="❌ Must be 18 or older"
+  button-text="Verify Age">
+</zk-proof-validator>
+
+<script type="module">
+  import 'zk-proof-web-component';
+  
+  // Listen for validation results
+  document.addEventListener('zk-validation-success', (event) => {
+    console.log('Validation passed!', event.detail);
+  });
+</script>
+```
+
+### React Integration
+
+```tsx
+import { useEffect } from 'react';
+import 'zk-proof-web-component';
+
+function MyComponent() {
+  useEffect(() => {
+    const handleSuccess = (event) => {
+      console.log('ZK Proof validated!', event.detail);
+    };
+    
+    document.addEventListener('zk-validation-success', handleSuccess);
+    return () => document.removeEventListener('zk-validation-success', handleSuccess);
+  }, []);
+
+  return (
+    <zk-proof-validator 
+      validation-type="income"
+      threshold="50000"
+      input-label="Annual income (USD)"
+      success-message="✅ Income qualified!"
+      button-text="Verify Income"
+    />
+  );
 }
 ```
 
-To verify that the smart contract operates as expected,
-we've provided some unit tests in `contract/src/test/counter.test.ts`.
+### Vue Integration
 
-We've also provided tests that use a simple simulator, which illustrates
-how to initialize and call the smart contract code locally without running a node in `contract/src/test/counter-simulator.ts`
+```vue
+<template>
+  <zk-proof-validator 
+    validation-type="credit"
+    threshold="700"
+    input-label="Credit score"
+    success-message="✅ Excellent credit!"
+    @zk-validation-success="handleSuccess"
+  />
+</template>
 
-### Building the smart contract
+<script setup>
+import 'zk-proof-web-component';
 
-Compile the contract:
-
-```sh
-npm run compact
+const handleSuccess = (event) => {
+  console.log('Credit verified!', event.detail);
+};
+</script>
 ```
 
-You should see the following output from npm and the Compact compiler:
+## 📋 Configuration
 
-```sh
-Compiling 1 circuits:
-  circuit "increment" (k=10, rows=29)
+### Attributes
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `validation-type` | string | `"age"` | Type of validation (age, income, credit, etc.) |
+| `threshold` | number | `18` | Minimum value required for validation |
+| `input-label` | string | `"Enter your age"` | Label for the input field |
+| `success-message` | string | `"✅ Validation successful"` | Message shown on success |
+| `error-message` | string | `"❌ Validation failed"` | Message shown on failure |
+| `button-text` | string | `"Validate with ZK Proof"` | Text for the validation button |
+
+### Events
+
+| Event | Detail | Description |
+|-------|--------|-------------|
+| `zk-validation-success` | `{ validationType, threshold, proof, timestamp }` | Fired when validation passes |
+| `zk-validation-error` | `{ validationType, threshold, error, timestamp }` | Fired when validation fails |
+
+### Programmatic API
+
+```javascript
+const validator = document.querySelector('zk-proof-validator');
+
+// Validate programmatically
+const result = await validator.validate(25);
+console.log(result.success); // true/false
+
+// Update configuration
+validator.setConfig({
+  threshold: 21,
+  successMessage: "🎉 You're old enough!",
+  validationType: "drinking-age"
+});
+
+// Get current configuration
+const config = validator.getConfig();
+console.log(config.threshold); // 21
 ```
 
-The compiler will complete very quickly because we've instructed it to skip ZK key generation with the option `--skip-zk`. The compiler's output files will be placed in the directory `contract/src/managed/counter`.
+## 🎯 Use Cases
 
-Build the TypeScript source files:
+- **Financial Services**: Loan pre-qualification without credit pulls
+- **E-commerce**: Age verification for restricted products
+- **Job Platforms**: Experience verification without revealing employers
+- **Healthcare**: Symptom verification without revealing medical history
+- **Gaming**: Skill level verification for competitive matches
+- **Real Estate**: Income verification for rental applications
 
-```sh
+## 🔧 Development
+
+### Prerequisites
+
+- Node.js 18+ 
+- Midnight Lace wallet (for testing)
+- Midnight proof server running locally
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/zk-proof-web-component.git
+cd zk-proof-web-component
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
 npm run build
 ```
 
-This creates the `contract/dist` directory.
+### Project Structure
 
-Start unit tests:
-
-```sh
-npm run test
+```
+src/
+├── core/                     # Core business logic
+│   ├── BBoardAPI.ts         # Blockchain API integration
+│   ├── WalletConnector.ts   # Midnight wallet connection
+│   ├── ZKProofService.ts    # ZK proof generation
+│   ├── types.ts             # TypeScript types
+│   └── utils.ts             # Utility functions
+│
+├── components/
+│   └── ZKProofWebComponent.ts  # Main Web Component
+│
+└── index.ts                 # Library entry point
 ```
 
-## CLI
+## 🌐 Browser Support
 
-After building the smart contract you can deploy it using the project in the subdirectory `counter-cli`:
+- Chrome/Edge 54+
+- Firefox 63+
+- Safari 10.1+
+- All modern browsers with Web Components v1 support
 
-```sh
-cd ../counter-cli
-```
+## 📄 License
 
-Build from source code:
+Apache-2.0 License - see [LICENSE](LICENSE) file for details.
 
-```sh
-npm run build
-```
+## 🤝 Contributing
 
-Run the DApp:
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
 
-```sh
-npm run testnet-remote
-```
+## 🔗 Links
 
-If you want to launch all these steps at once, you can use this command:
-
-```sh
-npm run start-testnet-remote
-```
-
-The preceding entry point assumes you already have a proof server running locally.
-If you want one to be started automatically for you, use instead:
-
-```sh
-npm run testnet-remote-ps
-```
-
-Then follow the instructions from the CLI.
-
-If you did not previously create and fund a Midnight Lace wallet, you will need to do so. Funds for testing can be requested from [the official faucet](https://midnight.network/test-faucet).
-
-You can find more information in part 2 of the [Midnight developer tutorial](https://docs.midnight.network/develop/tutorial/building).
+- [Midnight Network Documentation](https://docs.midnight.network/)
+- [Web Components Specification](https://developer.mozilla.org/en-US/docs/Web/Web_Components)
+- [Zero-Knowledge Proofs Explained](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
